@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  prometheus:
+    image: prom/prometheus:v2.47.2
+    container_name: prometheus
+    # entrypoint: ["/bin/sh",   "-c"]
+    command:
+      # - |
+        # "/bin/prometheus"
+      -  "--config.file=/prometheus/etc/prometheus.yml"
+      -  "--storage.tsdb.path=/prometheus/storage/"
+    restart: unless-stopped
+
+    # networks:
+    #   - localprom
+    ports:
+      - 9090:9090
+    volumes:
+      - "prometheus-data:/prometheus/"
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - '3000:3000'
+    volumes:
+      - grafana-data:/var/lib/grafana
+
+
+volumes:
+  grafana-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /data/grafana/
+      o: bind
+  prometheus-data:
+    driver: local
+    driver_opts:
+      type: none
+      device: /data/prometheus/
+      o: bind
+
+# networks:
+#   localprom:
+#     driver: bridge

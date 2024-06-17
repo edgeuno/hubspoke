@@ -1,0 +1,19 @@
+
+
+- name: Install nomad package
+  become: yes
+  ansible.builtin.package:
+    name:
+      - nomad
+    state: latest
+
+- name: Copy nomad template
+  become: true
+  ansible.builtin.template:
+    src: nomad.hcl.j2
+    dest: /etc/nomad.d/nomad.hcl
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - Restart nomad

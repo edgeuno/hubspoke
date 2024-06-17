@@ -1,0 +1,67 @@
+---
+
+all:
+  children:
+    local:
+      hosts:
+        localhost:
+          ansible_host: 127.0.0.1
+    firewalls:
+      hosts:
+        e1-dev-firewall-11:
+          ansible_host: 172.16.52.84
+          vmid: "4000"
+    proxies:
+      hosts:
+        e1-dev-proxy-11:
+          ansible_host: 172.16.52.87
+          vmid: "4002"
+      # hosts:
+      #   e1-dev-proxy-12:
+      #     ansible_host: 172.16.52.88
+      #     vmid: "4003"
+    workers:
+      hosts:
+        e1-dev-worker-11:
+          ansible_host: 172.16.52.90
+          vmid: "4004"
+        e1-dev-worker-12:
+          ansible_host: 172.16.52.91
+          vmid: "4005"
+        e1-dev-worker-13:
+          ansible_host: 172.16.52.92
+          vmid: "4006"
+    controllers:
+      hosts:
+        e1-dev-controller-11:
+          ansible_host: 172.16.52.95
+          vmid: "4009"
+        e1-dev-controller-12:
+          ansible_host: 172.16.52.96
+          vmid: "4010"
+        e1-dev-controller-13:
+          ansible_host: 172.16.52.97
+          vmid: "4011"
+      vars:
+        image: Ubuntu20
+        cores: 1
+        sockets: 1
+        memory: 2048
+        disk_size: 5G
+
+  vars:
+    ansible_user: e1deployer
+    # ansible_password: 
+    ansible_ssh_private_key_file: "files/keys/e1deployer"
+    oam_gateway: "172.16.52.1"
+    oam_netmask: "/24"
+    pop: bog1
+    stage: dev
+    
+    tf_pve_internal_vmbr: vmbr900
+    tf_pve_external_vmbr: vmbr2
+    tf_pve_oam_vmbr: vmbr1
+    tf_pve_api: "https://:8006/api2/json"
+    tf_pve_user: "root@pam"
+    tf_pve_password: ""
+    tf_pve_node: "pve001-bog"

@@ -1,0 +1,26 @@
+---
+
+- name: Copy hosts file with all ips and domains
+  become: true
+  ansible.builtin.template:
+    src: "hosts/{{ stage }}_hosts.j2"
+    dest: /etc/hosts
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Ensure docker-ce repository public key is installed
+  become: True
+  ansible.builtin.apt_key:
+    url: "https://download.docker.com/linux/ubuntu/gpg"
+    state: present
+  retries: 4
+  delay: 2
+
+- name: Create apt repository file
+  become: True
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+    update_cache: True
+    state: present
+    filename: docker

@@ -1,0 +1,19 @@
+---
+
+- name: Start and enable nomad service
+  become: true
+  ansible.builtin.systemd:
+    name: nomad
+    state: started
+    enabled: yes
+    masked: no
+
+
+# - name: Wait for Docker to start
+#   command: docker info
+#   become: true
+#   changed_when: false
+#   register: result
+#   until: result is success
+#   retries: 6
+#   delay: 10

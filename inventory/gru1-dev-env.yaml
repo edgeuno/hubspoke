@@ -1,0 +1,70 @@
+---
+
+all:
+  children:
+    local:
+      hosts:
+        localhost:
+          ansible_host: 127.0.0.1
+    firewalls:
+      hosts:
+        e1-gru1-dev-firewall-11:
+          ansible_host: 172.23.52.84
+          vmid: "4000"
+    proxies:
+      hosts:
+        e1-gru1-dev-proxy-11:
+          ansible_host: 172.23.52.87
+          vmid: "4002"
+        e1-gru1-dev-proxy-12:
+          ansible_host: 172.23.52.88
+          vmid: "4003"
+    controllers:
+      hosts:
+        e1-gru1-dev-control-11:
+          ansible_host: 172.23.52.90
+          vmid: "4004"
+        e1-gru1-dev-control-12:
+          ansible_host: 172.23.52.91
+          vmid: "4005"
+        e1-gru1-dev-control-13:
+          ansible_host: 172.23.52.92
+          vmid: "4006"
+      vars:
+        image: Ubuntu20
+        cores: 1
+        sockets: 1
+        memory: 2048
+        disk_size: 5G
+    workers:
+      hosts:
+        e1-gru1-dev-worker-11:
+          ansible_host: 172.23.52.93
+          vmid: "4007"
+        e1-gru1-dev-worker-12:
+          ansible_host: 172.23.52.94
+          vmid: "4008"
+        e1-gru1-dev-worker-13:
+          ansible_host: 172.23.52.95
+          vmid: "4009"
+
+
+  vars:
+    ansible_user: e1deployer
+    # ansible_password: 
+    ansible_ssh_private_key_file: "files/keys/e1deployer"
+    oam_gateway: "172.23.52.1"
+    oam_netmask: "/24"
+    pop: gru1
+    stage: dev
+    platform: e1tools
+    nomad_region: "{{ pop }}"
+    nomad_datacenter: 
+
+    tf_pve_internal_vmbr: vmbr900
+    tf_pve_external_vmbr: vmbr602
+    tf_pve_oam_vmbr: vmbr502
+    tf_pve_api: "https://:8006/api2/json"
+    tf_pve_user: "root@pam"
+    tf_pve_password: ""
+    tf_pve_node: "pve006-gru1"

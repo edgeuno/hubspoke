@@ -1,0 +1,17 @@
+---
+
+- name: Ensure hashicorp repository public key is installed
+  become: True
+  ansible.builtin.apt_key:
+    url: "https://apt.releases.hashicorp.com/gpg"
+    state: present
+  retries: 4
+  delay: 2
+
+- name: Create apt repository file to hashicorp
+  become: True
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64] https://apt.releases.hashicorp.com focal main"
+    update_cache: True
+    state: present
+    filename: docker

@@ -1,0 +1,7 @@
+---
+
+- import_tasks: pre-install.yaml
+
+- import_tasks: install.yaml
+
+- import_tasks: post-install.yaml

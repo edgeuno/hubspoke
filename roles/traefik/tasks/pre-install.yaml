@@ -1,0 +1,55 @@
+---
+
+- name: Create traefik-api directories
+  become: True
+  ansible.builtin.file:
+    path: /data/proxy/traefik-api/configs/
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    # mode: '0644'
+
+- name: Create traefik directories
+  become: True
+  ansible.builtin.file:
+    path: /data/proxy/traefik/configs/acme/
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    # mode: '0644'
+
+- name: Template a traefik-api config file
+  become: True
+  ansible.builtin.template:
+    src: traefik-api.yml
+    dest: /data/proxy/traefik-api/configs/config.yml
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    # mode: '0644'
+
+- name: Template a traefik config file
+  become: True
+  ansible.builtin.template:
+    src: traefik.yml
+    dest: /data/proxy/traefik/configs/traefik.yml
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    # mode: '0644'
+
+- name: Template a acme.json config file
+  become: True
+  ansible.builtin.copy:
+    src: acme.json
+    dest: /data/proxy/traefik/configs/acme/acme.json
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    mode: '0600'
+
+- name: Template a docker-compose.yaml file
+  become: True
+  ansible.builtin.template:
+    src: docker-compose.yaml
+    dest: /data/proxy/docker-compose.yaml
+    owner: "{{ app_user }}"
+    group: "{{ app_user }}"
+    # mode: '0644'

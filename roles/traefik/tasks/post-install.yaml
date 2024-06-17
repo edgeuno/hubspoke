@@ -1,0 +1,12 @@
+---
+
+- name: Run docker compose
+  become: True
+  ansible.builtin.shell:
+    cmd: "sudo /usr/bin/docker compose restart && /usr/bin/docker compose -f docker-compose.yaml up -d"
+    chdir: /data/proxy/
+  register: output
+
+- name: Show results
+  ansible.builtin.debug:
+    var: output

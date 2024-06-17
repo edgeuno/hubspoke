@@ -1,0 +1,102 @@
+data_dir  = "/opt/nomad/data"
+bind_addr = "{{ ansible_host }}"
+#bind_addr = "0.0.0.0"
+disable_update_check = true
+region = "{{ nomad_region }}"
+datacenter = "{{ nomad_datacenter }}"
+name = "{{ inventory_hostname }}"
+
+log_level = "INFO"
+log_rotate_bytes = 10240
+log_rotate_max_files = 5
+
+#ports {
+#  http = 4646
+#  rpc  = 4647
+#  serf = 4648
+#}
+
+#advertise {
+#  http = "{{ ansible_host }}"
+#  rpc  = "{{ ansible_host }}"
+#  serf = "{{ ansible_host }}"
+#}
+
+
+#addresses {
+#  http = "{{ ansible_host }}"
+#  rpc  = "{{ ansible_host }}"
+#  serf = "{{ ansible_host }}"
+#}
+
+telemetry {
+  collection_interval        = "3s"
+  disable_hostname           = true
+  publish_allocation_metrics = true
+  publish_node_metrics       = true
+  prometheus_metrics         = true
+  disable_dispatched_job_summary_metrics = true
+}
+
+
+{% if nomad_server is defined %}
+server {
+  enabled           = true
+  bootstrap_expect  = 3
+  server_join {
+    #retry_max      = 3
+    #retry_interval = "10s"
+    retry_join      = ["controller-11:4648","controller-12:4648","controller-13:4648"]
+  }
+}
+{% endif %}
+
+
+client {
+  enabled = true
+  network_interface = "eth0"
+  server_join {
+{% if nomad_server is defined %}
+    retry_join      = ["controller-11:4647"]
+{% else %}
+    retry_join      = ["controller-11:4647","controller-12:4647","controller-13:4647"]
+{% endif %}
+
+  }
+  host_network "eth0" {
+    interface = "eth0"
+  }
+  host_network "eth1" {
+    interface = "eth1"
+  }
+
+
+  meta {
+    owner = "ops"
+    name = "{{ inventory_hostname }}"
+    platform = "{{ platform }}"
+    role = "{{ group_names[0] }}"
+    pop = "{{ pop }}"
+    stage = "{{ stage }}"
+  }
+}
+
+plugin "docker" {
+  config {
+    extra_labels = ["job_name", "job_id", "task_group_name", "task_name", "namespace", "node_name", "node_id"]
+    gc {
+      image = false
+    }
+    volumes {
+      enabled      = true
+      selinuxlabel = "z"
+    }
+
+    allow_privileged = true
+    allow_caps = [
+      "CHOWN", "DAC_OVERRIDE", "FSETID", "FOWNER", "MKNOD",
+      "SETGID", "SETUID", "SETFCAP", "SETPCAP", "NET_BIND_SERVICE",
+      "SYS_CHROOT", "KILL", "AUDIT_WRITE", "NET_RAW",
+    ]
+  }
+}

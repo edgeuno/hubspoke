@@ -1,0 +1,48 @@
+---
+
+- import_playbook: iac.yaml
+  tags:
+    - terraform
+
+- name: Apply role common
+  gather_facts: false
+  hosts:
+    - controllers
+    - workers
+    - proxies
+  # serial: 0
+  roles:
+    - role: common
+  tags:
+    - bootstrap
+
+- name: Install nomad server and config service
+  gather_facts: false
+  serial: 1
+  hosts:
+    - controllers
+  roles:
+    - nomad
+  tags:
+    - nomad
+  vars:
+    - nomad_server: true
+
+- name: Install nomad client and config service
+  gather_facts: false
+  hosts:
+    - all:!controllers:!firewalls
+  roles:
+    - nomad
+  tags:
+    - nomad
+
+- name: Configure Traefik proxy
+  gather_facts: false
+  hosts:
+    - proxies
+  roles:
+    - traefik
+  tags:
+    - traefik
+

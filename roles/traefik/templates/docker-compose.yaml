@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  traefik-api:
+    image: lowlifebob/private:traefik-api_1.0.2
+    ports:
+      - published: 8888/TCP
+        target: 8888
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/proxy/traefik-api/configs/:/code/app/configs/
+
+  traefik:
+    image: traefik:v3.0.0-beta3
+    depends_on:
+      - traefik-api
+    ports:
+      - published: 80
+        target: 80
+      - published: 443
+        target: 443
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /data/proxy/traefik/configs/:/etc/traefik/

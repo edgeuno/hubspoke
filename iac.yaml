@@ -1,0 +1,52 @@
+---
+
+- name: Create terraform variables file
+  connection: local
+  hosts: localhost
+  gather_facts: false
+  tasks:
+
+    - name: Installing terraform provider
+      ansible.builtin.command:
+        cmd: "terraform init"
+        chdir: "files/tf/"
+      register: output
+
+    - name: Terraform init output
+      debug:
+        var: output.stdout_lines
+
+    - name: Create workspace
+      ignore_errors: true
+      ansible.builtin.command:
+        cmd: "terraform workspace new {{ pop }}-{{ stage }}"
+        chdir: "files/tf/"
+      register: output
+
+    - name: Change to workspace
+      ansible.builtin.command:
+        cmd: "terraform workspace select {{ pop }}-{{ stage }}"
+        chdir: "files/tf/"
+      register: output
+
+    - name: Create *.auto.tfvars file 
+      ansible.builtin.template:
+        src: auto.tfvars.j2
+        dest: "files/tf/{{ pop }}_{{ stage }}.auto.tfvars"
+        mode: '0644'
+
+    - name: Planning using terraform vars
+      ansible.builtin.command:
+        cmd: "terraform plan -var-file={{ pop }}_{{ stage }}.auto.tfvars -out {{ pop }}_{{ stage }}_plan"
+        chdir: "files/tf/"
+      register: output
+
+    # - name: Deploying terraform resources
+    #   community.general.terraform:
+    #     project_path: "files/tf/"
+    #     state: present
+    #   register: output
+    
+    - name: Terraform output
+      debug:
+        var: output.stdout_lines

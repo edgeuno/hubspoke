@@ -1,0 +1,50 @@
+---
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+stage: dev
+app_user: e1deployer
+
+oam_interface: eth0
+
+proxy_oam_interface: eth0
+proxy_oam_ip: "172.16.52.87"
+proxy_external_interface: eth1
+proxy_external_ip: 10.172.10.2/30
+proxy_internal_interface: eth2
+proxy_internal_ip: 10.172.20.6/30
+
+
+firewall_public_interface: eth1
+firewall_public_ip: "200.150.20.10/24"
+firewall_public_gateway: "200.150.20.1"
+
+firewall_external_interface: eth2
+firewall_external_ip: 10.172.10.1/30
+firewall_internal_interface: eth3
+firewall_internal_ip: 10.172.10.5/30
+
+firewall_bastion_interface: eth4
+firewall_bastion_ip: 10.172.10.1/24
+firewall_bastion_vlan: 1500
+
+firewall_spoke_interface: eth4
+firewall_spoke_ip: 10.172.11.1/24
+firewall_spoke_vlan: 1610
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+tf_ssh_username: "{{ ansible_user }}"
+tf_ssh_private_key: "/home/jlopez/dev/iac/ansible/hubspoke/files/keys/e1deployer"
+tf_ssh_public_key: ""
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+users:
+  - username: 
+    gecos: "Administrator"
+    sudo: True
+    pkeys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC5RCCgtHZTfwmNp0nHFNFsCQI4pUS4K0wuMfvGxPiohElGaqGYQR4lfur+LsLASb5DIDl3vQ4BtbpFOc+ej+Sh1Z3m155RvgOlQbrZijwjXq7y09ne7JKr4uObbyL20d0kLbpp3E4baltF3Ld5iYeYjNhLIjgwOSDddKOZQ0Zxj2ftZeZ6na5VgUqsvqHMKgOmvdKTq+um/YuOVcnPa8xk34pDeMe+a/HYGSXT95Wm5Sxzx1bXDqPYefQFyXaWCISk7QZBNsnZAl3fXtobxyzFaenASos1CnUWBGyw2DCdzkrpwR/z/E0Fs7FVbbbavdZyA0E2aE4076F9vThTpJox agustin@Arya
+    
+    

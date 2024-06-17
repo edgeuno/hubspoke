@@ -1,0 +1,44 @@
+---
+
+all:
+  children:
+    local:
+      hosts:
+        localhost:
+          ansible_host: 127.0.0.1
+    firewalls:
+      hosts:
+        e1-dev-firewall-11:
+          ansible_host: 172.16.17.240
+          vmid: "4000"
+    proxies:
+      hosts:
+        e1-dev-proxy-11:
+          ansible_host: 172.16.17.242
+          vmid: "4002"
+    workers:
+      hosts:
+        e1-dev-worker-11:
+          ansible_host: 172.16.17.245
+          vmid: "4004"
+        e1-dev-worker-12:
+          ansible_host: 172.16.17.246
+          vmid: "4005"
+        e1-dev-worker-13:
+          ansible_host: 172.16.17.247
+          vmid: "4006"
+
+  vars:
+    ansible_user: e1deployer
+    # ansible_password: 
+    ansible_ssh_private_key_file: "files/keys/e1deployer"
+    oam_gateway: "172.16.17.1"
+    oam_netmask: "/24"
+
+    tf_pve_internal_vmbr: vmbr666
+    tf_pve_external_vmbr: vmbr602
+    tf_pve_oam_vmbr: vmbr502
+    tf_pve_api: "https://:8006/api2/json"
+    tf_pve_user: "iac@pve"
+
+    tf_pve_node: "pve007"

@@ -1,0 +1,22 @@
+---
+
+- name: Update apt and install docker-ce
+  become: True
+  apt:
+    name: "{{ item }}"
+    state: latest
+  with_items: "{{ docker_packages }}"
+
+- name: Install qemu-agent service
+  become: True
+  apt:
+    name: qemu-guest-agent
+    state: latest
+  notify: restart qemu-guest-agent
+
+- name: Ensure docker service is started and enabled
+  become: True
+  service:
+    name: "docker"
+    enabled: yes
+    state: started

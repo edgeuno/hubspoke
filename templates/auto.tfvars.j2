@@ -1,0 +1,62 @@
+
+pve_api = "{{ tf_pve_api }}"
+pve_user = "{{ tf_pve_user }}"
+pve_password = "{{ tf_pve_password }}"
+pve_node = "{{ tf_pve_node }}"
+ssh_username = "{{ tf_ssh_username }}"
+ssh_private_key = "{{ tf_ssh_private_key }}"
+ssh_public_key = "{{ tf_ssh_public_key }}"
+pve_internal_vmbr = "{{ tf_pve_internal_vmbr }}"
+pve_external_vmbr = "{{ tf_pve_external_vmbr }}"
+pve_oam_vmbr = "{{ tf_pve_oam_vmbr }}"
+
+node_config = [
+{% for host in groups["controllers"] %}
+  {
+    vmid = {{ hostvars[host]['vmid'] }}
+    name = "{{ hostvars[host].inventory_hostname }}"
+    ip_address = "{{ hostvars[host].ansible_host }}{{ oam_netmask }}"
+    ip_gateway = "{{ oam_gateway }}"
+    image = "{{ hostvars[host]['image'] }}"
+    cores = {{ hostvars[host]['cores'] }}
+    sockets = {{ hostvars[host]['sockets'] }}
+    memory = {{ hostvars[host]['memory'] }}
+    disk_size = "{{ hostvars[host]['disk_size'] }}"
+  },  
+{% endfor %}
+]
+
+worker_config = [
+{% for host in groups["workers"] %}
+  {
+    name = "{{ hostvars[host].inventory_hostname }}"
+    ip_address = "{{ hostvars[host].ansible_host }}{{ oam_netmask }}"
+    ip_gateway = "{{ oam_gateway }}"
+    vmid = {{ hostvars[host]['vmid'] }}
+  },  
+{% endfor %}
+]
+
+firewall_config = [
+{% for host in groups["firewalls"] %}
+  {
+    name = "{{ hostvars[host].inventory_hostname }}"
+    ip_address = "{{ hostvars[host].ansible_host }}{{ oam_netmask }}"
+    ip_gateway = "{{ oam_gateway }}"
+    vmid = {{ hostvars[host]['vmid'] }}
+  },  
+{% endfor %}
+]
+
+proxy_config = [
+{% for host in groups["proxies"] %}
+  {
+    name = "{{ hostvars[host].inventory_hostname }}"
+    ip_address = "{{ hostvars[host].ansible_host }}{{ oam_netmask }}"
+    ip_gateway = "{{ oam_gateway }}"
+    vmid = {{ hostvars[host]['vmid'] }}
+  },  
+{% endfor %}
+]
+
+

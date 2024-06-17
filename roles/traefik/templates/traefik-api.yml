@@ -1,0 +1,93 @@
+http:
+  middlewares:
+    auth:
+      basicAuth:
+        users:
+        - traefik:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/
+    default:
+      chain:
+        middlewares:
+        - default-security-headers
+        - error-pages
+        - gzip
+    default-security-headers:
+      headers:
+        browserXssFilter: true
+        contentTypeNosniff: true
+        forceSTSHeader: true
+        frameDeny: true
+        referrerPolicy: strict-origin-when-cross-origin
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 63072000
+    error-pages:
+      errors:
+        query: erreur{status}/
+        service: traefik-error-pages
+        status:
+        - 403-404
+        - '500'
+        - '503'
+    gzip:
+      compress: {}
+    rate-limit:
+      rateLimit:
+        average: 100
+        burst: 100
+        period: 1
+  routers:
+    rou-traefik:
+      entryPoints:
+      - https
+      middlewares:
+      - auth
+      priority: 10
+      rule: Host(`traefik.dev.`)
+      service: api@internal
+      tls:
+        certresolver: letsEncrypt
+  services:
+    svc-:
+      loadBalancer:
+        passHostHeader: true
+        servers:
+        - url: https://
+        sticky:
+          cookie: {}
+tls:
+  options:
+    intermediate:
+      cipherSuites:
+      - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+      - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+      minVersion: VersionTLS12
+      sniStrict: true
+    modern:
+      minVersion: VersionTLS13
+      sniStrict: true
+    old:
+      cipherSuites:
+      - TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+      - TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+      - TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305
+      - TLS_ECDHE_RSA_WITH_CHACHA20_POLY1305
+      - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
+      - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256
+      - TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA
+      - TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA
+      - TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA
+      - TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA
+      - TLS_RSA_WITH_AES_128_GCM_SHA256
+      - TLS_RSA_WITH_AES_256_GCM_SHA384
+      - TLS_RSA_WITH_AES_128_CBC_SHA256
+      - TLS_RSA_WITH_AES_128_CBC_SHA
+      - TLS_RSA_WITH_AES_256_CBC_SHA
+      - TLS_RSA_WITH_3DES_EDE_CBC_SHA
+      minVersion: TLSv1
+      sniStrict: true
